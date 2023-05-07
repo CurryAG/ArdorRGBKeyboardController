@@ -1,0 +1,40 @@
+﻿<Window x:Class="ArdorRGBKeyboardController.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ArdorRGBKeyboardController"
+        mc:Ignorable="d"
+        Loaded="Window_Loaded"
+        Title="RGBController" SizeToContent="WidthAndHeight">
+    <Grid Height="350" Width="500">
+        <Label Content="Статичный цвет:" HorizontalAlignment="Left" FontSize="16" Margin="17,10,0,0" VerticalAlignment="Top" Width="180"/>
+        <Rectangle Fill="Black" Height="75" Width="75" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="17,68,0,0"/>
+        <Ellipse x:Name="ColorCircleOnBlackSquare" Fill="LightBlue" Width="50" Height="50" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="30,80,0,0" />
+        <Rectangle Fill="White" Height="75" Width="75" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="107,68,0,0"/>
+        <Ellipse x:Name="ColorCircleOnWhiteSquare" Fill="LightBlue" Width="50" Height="50" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="120,80,0,0"/>
+        <Label Content="Текущий выбранный цвет" HorizontalAlignment="Left" Margin="17,37,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.219,0.246"/>
+        <Label Content="R" HorizontalAlignment="Left" FontSize="16" Margin="70,170,0,0" HorizontalContentAlignment="Left" Width="20" Height="30" VerticalAlignment="Top"/>
+        <Label Content="G" HorizontalAlignment="Left" FontSize="16" Margin="70,210,0,0" HorizontalContentAlignment="Left" Width="20" Height="30" VerticalAlignment="Top"/>
+        <Label Content="B" HorizontalAlignment="Left" FontSize="16" Margin="70,250,0,0" HorizontalContentAlignment="Left" Width="20" Height="30" VerticalAlignment="Top"/>
+        <TextBox x:Name="RTextBox" HorizontalAlignment="Left" FontSize="16" Margin="10,175,0,0" TextWrapping="Wrap" Text="255" VerticalAlignment="Top" Width="48" PreviewTextInput="OnlyDigit_PreviewTextInput" LostFocus="CheckNumInTextBox_LostFocus" TextChanged="RTextBox_TextChanged" MaxLength="3"/>
+        <TextBox x:Name="GTextBox" HorizontalAlignment="Left" FontSize="16" Margin="10,215,0,0" TextWrapping="Wrap" Text="255" VerticalAlignment="Top" Width="48" PreviewTextInput="OnlyDigit_PreviewTextInput" LostFocus="CheckNumInTextBox_LostFocus" TextChanged="GTextBox_TextChanged" MaxLength="3"/>
+        <TextBox x:Name="BTextBox" HorizontalAlignment="Left" FontSize="16" Margin="10,255,0,0" TextWrapping="Wrap" Text="255" VerticalAlignment="Top" Width="48" PreviewTextInput="OnlyDigit_PreviewTextInput" LostFocus="CheckNumInTextBox_LostFocus" TextChanged="BTextBox_TextChanged" MaxLength="3"/>
+        <Slider x:Name="RSlider" HorizontalAlignment="Left" Margin="100,178,0,0" VerticalAlignment="Top" Width="100" Minimum="1" Maximum="255" ValueChanged="RSlider_ValueChanged"/>
+        <Slider x:Name="GSlider" HorizontalAlignment="Left" Margin="100,218,0,0" VerticalAlignment="Top" Width="100" Minimum="1" Maximum="255" ValueChanged="GSlider_ValueChanged"/>
+        <Slider x:Name="BSlider" HorizontalAlignment="Left" Margin="100,258,0,0" VerticalAlignment="Top" Width="100" Minimum="1" Maximum="255" ValueChanged="BSlider_ValueChanged"/>
+        <Label Content="Динамический цвет:" HorizontalAlignment="Left" FontSize="16" Margin="300,10,0,0" VerticalAlignment="Top" Width="180"/>
+        <ComboBox x:Name="DynamicModesComboBox" HorizontalAlignment="Left" Margin="280,64,0,0" VerticalAlignment="Top" Width="200" DisplayMemberPath="Name" SelectionChanged="DynamicModesComboBox_SelectionChanged"/>
+        <!-- <TextBlock x:Name="DescriptionTextBlock" HorizontalAlignment="Left" Margin="280,122,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="106" Width="200"/> -->
+        <!-- <Label Content="Описание режима:" HorizontalAlignment="Left" Margin="280,91,0,0" VerticalAlignment="Top" Width="200"/> -->
+        <TextBlock HorizontalAlignment="Left" Margin="275,235,0,0" TextWrapping="Wrap" Text="При использовании динамического режима возможна большая нагрузка на ЦП" VerticalAlignment="Top" Height="50" Width="210"/>
+        <Button x:Name="ApplyStaticRGB" Content="Применить статичную подсветку" HorizontalAlignment="Left" Margin="10,300,0,0" VerticalAlignment="Top" Width="230" Click="ApplyStaticRGB_Click" PreviewMouseDown="StopAllThreads_PreviewMouseDown"/>
+        <Button x:Name="ApplyDynamicRGB" Content="Применить динамическую подсветку" HorizontalAlignment="Left" Margin="260,300,0,0" VerticalAlignment="Top" Width="230" Click="ApplyDynamicRGB_Click" PreviewMouseDown="StopAllThreads_PreviewMouseDown"/>
+        <Label x:Name="VersionLabel" Content="X.Y.Z" FontSize="10" HorizontalAlignment="Left" Margin="457,325,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="CreatorLabel" Content="Curry" FontSize="10" HorizontalAlignment="Left" Margin="4,325,0,0" VerticalAlignment="Top"/>
+        <Label Content="Скорость изменения цвета:" HorizontalAlignment="Left" Margin="280,105,0,0" VerticalAlignment="Top"/>
+        <Label Content="По умолчанию - 3" HorizontalAlignment="Left" FontSize="12" Margin="280,187,0,0" VerticalAlignment="Top"/>
+        <Slider x:Name="ColorChangeSpeedSlider" Minimum="1" Maximum="9" Value="3" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="280,140,0,0" TickPlacement="BottomRight" IsSnapToTickEnabled="True" TickFrequency="1" Width="200"/>
+        <Label Content=" 1     2     3     4      5     6     7     8     9" HorizontalAlignment="Left" Margin="275,164,0,0" VerticalAlignment="Top" Width="225"/>
+    </Grid>
+</Window>

@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="dll\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Windowshook">
+      <HintPath>dll\Windowshook.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
