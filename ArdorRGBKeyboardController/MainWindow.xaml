@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ArdorRGBKeyboardController"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
-        Title="RGBController" SizeToContent="WidthAndHeight">
+        Title="RGBController" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize">
     <Grid Height="350" Width="500">
         <Label Content="Статичный цвет:" HorizontalAlignment="Left" FontSize="16" Margin="17,10,0,0" VerticalAlignment="Top" Width="180"/>
         <Rectangle Fill="Black" Height="75" Width="75" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="17,68,0,0"/>
