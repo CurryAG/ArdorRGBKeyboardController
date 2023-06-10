@@ -1,21 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
+using System.DirectoryServices.ActiveDirectory;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using static System.Net.Mime.MediaTypeNames;
+using System.Windows.Threading;
+using Application = System.Windows.Application;
+using Color = System.Windows.Media.Color;
+using Forms = System.Windows.Forms;
+using TextBox = System.Windows.Controls.TextBox;
 
 namespace ArdorRGBKeyboardController
 {
@@ -37,13 +39,29 @@ namespace ArdorRGBKeyboardController
             RefreshDynamicLightModeList();
             DynamicModesComboBox.ItemsSource = DynamicLightModes;
             DynamicModesComboBox.SelectedIndex = 0;
+            Forms.NotifyIcon notifyIcon = new Forms.NotifyIcon();
+            Forms.NotifyIcon icon = new Forms.NotifyIcon();
+            Stream iconStream = Application.GetResourceStream(new Uri("pack://application:,,,/Resources/ArdorLogo.ico")).Stream;
+            notifyIcon.Icon = new Icon(iconStream);
+            notifyIcon.Text = "RGBController";
+            notifyIcon.Click += NotifyIcon_Click;
+            notifyIcon.Visible = true;
         }
+
+        private void NotifyIcon_Click(object sender, EventArgs e)
+        {
+            this.Show();
+            this.Focus();
+            Activate();
+        }
+
         private void RefreshDynamicLightModeList()
         {
             DynamicLightModes = new List<DynamicLightMode>
             {
                 new DynamicLightMode("Переливающиеся цвета", "Постоянное плавное изменение цветов на случайные", new Thread(DefaultCycleMode)),
                 new DynamicLightMode("Переливающиеся цвета (флаг России)", "Постоянное плавное изменение цветов как на флаге России", new Thread(RussiaFlagCycleMode)),
+                new DynamicLightMode("Адаптивная подсветка", "//", new Thread(ScreenAdaptiveColor)),
             };
         }
         private void OnlyDigit_PreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -222,6 +240,37 @@ namespace ArdorRGBKeyboardController
                 }
             }
         }
+        private void ScreenAdaptiveColor()
+        {
+            Color currentColor = Color.FromRgb((byte)ColorR, (byte)ColorG, (byte)ColorB);
+            Color targetColor = GetAverageColor();
+            float step = 0;
+            int R, G, B, mixR, mixG, mixB;
+            while (true)
+            {
+                if (step >= 1f)
+                {
+                    step = 0;
+                    currentColor = targetColor;
+                    targetColor = GetAverageColor();
+                    if (currentColor == targetColor)
+                    {
+                        Thread.Sleep(2000);
+                    }
+                }
+                mixR = (int)(currentColor.R * (1f - step) + targetColor.R * step);
+                mixG = (int)(currentColor.G * (1f - step) + targetColor.G * step);
+                mixB = (int)(currentColor.B * (1f - step) + targetColor.B * step);
+                RGBController.All = Color.FromRgb((byte)mixR, (byte)mixG, (byte)mixB);
+                RGBController.SetAllColor();
+                step += ColorChangeSpeed;
+                Thread.Sleep(5);
+                if (!DynamicThreadActive)
+                {
+                    break;
+                }
+            }
+        }
         private void ApplyStaticRGB_Click(object sender, RoutedEventArgs e)
         {
             RGBController.All = Color.FromRgb((byte)ColorR, (byte)ColorG, (byte)ColorB);
@@ -246,6 +295,50 @@ namespace ArdorRGBKeyboardController
         {
             DynamicThreadActive = false;
             Thread.Sleep(20);
+        }
+        public static Color GetAverageColor()
+        {
+            using (Bitmap bitmap = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height))
+            using (Graphics graphics = Graphics.FromImage(bitmap))
+            {
+                graphics.CopyFromScreen(Screen.PrimaryScreen.Bounds.X, Screen.PrimaryScreen.Bounds.Y, 0, 0, bitmap.Size);
+
+                int red = 0, green = 0, blue = 0;
+                int count = 0;
+
+                for (int y = 0; y < bitmap.Height; y += 32)
+                {
+                    for (int x = 0; x < bitmap.Width; x += 32)
+                    {
+                        System.Drawing.Color color = bitmap.GetPixel(x, y);
+
+                        red += color.R;
+                        green += color.G;
+                        blue += color.B;
+
+                        count++;
+                    }
+                }
+
+                red /= count;
+                green /= count;
+                blue /= count;
+
+                if (red < 100 && green < 100 && blue < 100)
+                {
+                    red += 51;
+                    green += 51;
+                    blue += 51;
+                }
+
+                return Color.FromRgb((byte)red, (byte)green, (byte)blue);
+            }
+        }
+        protected override void OnStateChanged(EventArgs e)
+        {
+            if (WindowState == WindowState.Minimized) this.Hide();
+
+            base.OnStateChanged(e);
         }
     }
 }

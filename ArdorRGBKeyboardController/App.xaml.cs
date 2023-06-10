@@ -13,7 +13,7 @@ namespace ArdorRGBKeyboardController
     /// </summary>
     public partial class App : Application
     {
-        public static string Version = "1.0.0";
+        public static string Version = "1.0.0b1";
         public static string Creator = "Curry";
     }
 }
